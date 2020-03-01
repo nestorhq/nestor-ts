@@ -4,18 +4,19 @@ import {
   NestorResourcesS3,
 } from './types';
 
-export interface NestorResources {
-  resourcesAPI(): NestorResourcesAPI;
+export interface ResourcesRepository {
+  s3Resources: NestorResourcesS3[];
 }
 
-interface ResourcesRepository {
-  s3Resources: NestorResourcesS3[];
+export interface NestorResources {
+  resourcesAPI(): NestorResourcesAPI;
+  resourcesRepository(): ResourcesRepository;
 }
 
 function mkResourcesS3(args: NestorResourcesS3Args): NestorResourcesS3 {
   return {
     getBucketName(): string {
-      return `bucket name for ${args.bucketName}`;
+      return args.bucketName;
     },
   };
 }
@@ -39,6 +40,9 @@ export default (): NestorResources => {
   return {
     resourcesAPI(): NestorResourcesAPI {
       return mkResourcesManager(repository);
+    },
+    resourcesRepository(): ResourcesRepository {
+      return repository;
     },
   };
 };

@@ -6,6 +6,7 @@ import {
 } from './index';
 
 import { NestorResources } from '../resources';
+import { resourcesList } from '../utils';
 
 export function getLocalCliOptions(): NestorCliDescription {
   return {
@@ -34,7 +35,19 @@ export default (args: NestorRuntimeArgs): NestorRuntimeExec => {
       };
     },
     async exec(resources: NestorResources): Promise<void> {
-      console.log(`exec - ${args.cli.actionName}`);
+      switch (args.cli.actionName) {
+        case 'deploy':
+          break;
+
+        case 'list':
+          resourcesList(resources);
+          break;
+
+        default:
+          console.log(`unknown command: ${args.cli.actionName}`);
+          process.exit(2);
+          break;
+      }
     },
   };
 };
