@@ -2,10 +2,6 @@ import { NestorAPI } from './types';
 
 import { VERSION } from './version';
 
-export interface ProcessEnv {
-  [key: string]: string | undefined;
-}
-
 import mkRuntimeContext from './runtimeContext';
 
 export default function nestor(): NestorAPI {

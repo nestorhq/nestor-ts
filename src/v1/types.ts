@@ -1,5 +1,3 @@
-export type NestorVariables = { [key: string]: string | boolean | number };
-
 export interface NestorEnvironmentVariables {
   runtimeContext: 'local' | 'ghaction';
   environmentName: string; // name of the runtime environment production, staging, name of branch ...

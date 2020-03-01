@@ -1,14 +1,14 @@
 import program, { Command } from 'commander';
 
-import {
-  NestorEnvironmentVariables,
-  NestorResourcesManager,
-  NestorVariables,
-} from '../types';
-
-import { ProcessEnv } from '../index';
+import { NestorEnvironmentVariables, NestorResourcesManager } from '../types';
 
 import mkLocalRuntimeContext, { getLocalCliOptions } from './local';
+
+export interface ProcessEnv {
+  [key: string]: string | undefined;
+}
+
+export type NestorVariables = { [key: string]: string | boolean | number };
 
 type NestorOptionDescription = [
   /* flags */ string,
