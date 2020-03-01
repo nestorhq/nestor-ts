@@ -11,13 +11,13 @@ export interface NestorResourcesS3Args {
   bucketName: string;
 }
 
-export interface NestorResourcesManager {
+export interface NestorResourcesAPI {
   s3(args: NestorResourcesS3Args): NestorResourcesS3;
 }
 
 export interface NestorAPI {
   getVersion(): string;
   vars: NestorEnvironmentVariables;
-  resources: NestorResourcesManager;
+  resources: NestorResourcesAPI;
   exec(): Promise<void>;
 }

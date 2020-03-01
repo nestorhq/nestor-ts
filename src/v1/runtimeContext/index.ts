@@ -1,8 +1,9 @@
 import program, { Command } from 'commander';
 
-import { NestorEnvironmentVariables, NestorResourcesManager } from '../types';
+import { NestorEnvironmentVariables } from '../types';
 
 import mkLocalRuntimeContext, { getLocalCliOptions } from './local';
+import { NestorResources } from '../resources';
 
 export interface ProcessEnv {
   [key: string]: string | undefined;
@@ -32,8 +33,7 @@ export interface NestorCliArguments {
 
 export interface NestorRuntimeExec {
   vars(): NestorEnvironmentVariables;
-  resources(): NestorResourcesManager;
-  exec(): Promise<void>;
+  exec(resources: NestorResources): Promise<void>;
 }
 
 export interface NestorRuntimeArgs {
@@ -111,6 +111,14 @@ function parseCli(
   return parseResult;
 }
 
+function checkEnvVariable(env: ProcessEnv, varName: string): string {
+  if (!env[varName]) {
+    console.log(`Missing environment varibale: ${varName}`);
+    process.exit(2);
+  }
+  return `${env[varName]}`;
+}
+
 export default function mkRuntimeContext(
   env: ProcessEnv,
   argv: string[],
@@ -121,7 +129,12 @@ export default function mkRuntimeContext(
 
   const cliArguments = parseCli(cliOptions, argv, version);
 
-  const envVariables: NestorVariables = {};
+  // Retrieve AWS environment variables
+  const envVariables: NestorVariables = {
+    awsAccessKeyId: checkEnvVariable(env, 'NESTOR_AWS_ACCESS_KEY_ID'),
+    awsSecretAccessKey: checkEnvVariable(env, 'NESTOR_AWS_SECRET_ACCESS_KEY'),
+    awsRegion: checkEnvVariable(env, 'NESTOR_AWS_REGION'),
+  };
 
   const runtimeContext = mkLocalRuntimeContext({
     envVariables,

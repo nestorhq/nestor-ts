@@ -1,14 +1,11 @@
-import {
-  NestorEnvironmentVariables,
-  NestorResourcesManager,
-  NestorResourcesS3Args,
-  NestorResourcesS3,
-} from '../types';
+import { NestorEnvironmentVariables } from '../types';
 import {
   NestorRuntimeArgs,
   NestorRuntimeExec,
   NestorCliDescription,
 } from './index';
+
+import { NestorResources } from '../resources';
 
 export function getLocalCliOptions(): NestorCliDescription {
   return {
@@ -29,7 +26,6 @@ export function getLocalCliOptions(): NestorCliDescription {
 }
 
 export default (args: NestorRuntimeArgs): NestorRuntimeExec => {
-  console.log(args);
   return {
     vars(): NestorEnvironmentVariables {
       return {
@@ -37,19 +33,8 @@ export default (args: NestorRuntimeArgs): NestorRuntimeExec => {
         runtimeContext: 'local',
       };
     },
-    resources(): NestorResourcesManager {
-      return {
-        s3(s3args: NestorResourcesS3Args): NestorResourcesS3 {
-          return {
-            getBucketName(): string {
-              return `bucket name for ${s3args.bucketName}`;
-            },
-          };
-        },
-      };
-    },
-    async exec(): Promise<void> {
-      console.log('exec');
+    async exec(resources: NestorResources): Promise<void> {
+      console.log(`exec - ${args.cli.actionName}`);
     },
   };
 };
