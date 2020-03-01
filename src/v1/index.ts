@@ -5,8 +5,8 @@ import { VERSION } from './version';
 import mkRuntimeContext from './runtime';
 import mkResources from './resources';
 
-export default function nestor(): NestorAPI {
-  const runtime = mkRuntimeContext(process.env, process.argv, VERSION);
+export default function nestor(appName: string): NestorAPI {
+  const runtime = mkRuntimeContext(process.env, process.argv, VERSION, appName);
   const resourcesHolder = mkResources();
 
   // return API to script

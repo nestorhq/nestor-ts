@@ -30,6 +30,7 @@ export function getLocalCliOptions(): NestorCliDescription {
 
 export default (args: NestorRuntimeArgs): NestorRuntimeExec => {
   const environmentName = args.cli.programOpts.env as string;
+  const appName = args.envVariables.appName;
   return {
     vars(): NestorEnvironmentVariables {
       return {
@@ -50,7 +51,7 @@ export default (args: NestorRuntimeArgs): NestorRuntimeExec => {
               region,
               sessionToken: undefined,
             });
-            await awsDeployer(awsApi, resources, environmentName);
+            await awsDeployer(awsApi, resources, appName, environmentName);
           }
           break;
 

@@ -124,6 +124,7 @@ export default function mkRuntimeContext(
   env: ProcessEnv,
   argv: string[],
   version: string,
+  appName: string,
 ): NestorRuntimeExec {
   // TODO: parse environment variables to detect which runtime to use
   const cliOptions = getLocalCliOptions();
@@ -132,6 +133,7 @@ export default function mkRuntimeContext(
 
   // Retrieve AWS environment variables
   const envVariables: NestorEnvVariables = {
+    appName,
     awsAccessKeyId: checkEnvVariable(env, 'NESTOR_AWS_ACCESS_KEY_ID'),
     awsSecretAccessKey: checkEnvVariable(env, 'NESTOR_AWS_SECRET_ACCESS_KEY'),
     awsRegion: checkEnvVariable(env, 'NESTOR_AWS_REGION'),

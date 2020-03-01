@@ -19,14 +19,18 @@ export interface S3CopyFileArgs {
 }
 
 export interface S3Service {
-  createBucket(bucketName: string, envTagName: string): Promise<void>;
+  createBucket(bucketName: string): Promise<void>;
   copyFileToS3(args: S3CopyFileArgs): Promise<S3File>;
   checkBucketExists(bucketName: string): Promise<boolean>;
 }
 
-export default (client: AWS.S3): S3Service => {
+export default (
+  client: AWS.S3,
+  appName: string,
+  environmentName: string,
+): S3Service => {
   return {
-    async createBucket(bucketName: string, envTagName: string): Promise<void> {
+    async createBucket(bucketName: string): Promise<void> {
       const spinner = ora(`creating bucket: ${bucketName}`).start();
       try {
         const params = {
@@ -41,8 +45,12 @@ export default (client: AWS.S3): S3Service => {
           Tagging: {
             TagSet: [
               {
+                Key: 'app',
+                Value: appName,
+              },
+              {
                 Key: 'env',
-                Value: envTagName,
+                Value: environmentName,
               },
             ],
           },
