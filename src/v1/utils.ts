@@ -8,7 +8,6 @@ export function resourcesList(resources: NestorResources): void {
   log(chalk.underline('List of resources:'));
   const repository = resources.resourcesRepository();
   log(chalk.green('S3:'));
-  // instantiate
   const table = new Table({
     head: ['#', 'bucket name'],
     colWidths: [5, 100],

@@ -9,7 +9,8 @@ export interface ProcessEnv {
   [key: string]: string | undefined;
 }
 
-export type NestorVariables = { [key: string]: string | boolean | number };
+export type NestorEnvVariables = { [key: string]: string };
+export type NestorCliVariables = { [key: string]: string | boolean | number };
 
 type NestorOptionDescription = [
   /* flags */ string,
@@ -26,9 +27,9 @@ export interface NestorCliDescription {
 }
 
 export interface NestorCliArguments {
-  programOpts: NestorVariables;
+  programOpts: NestorCliVariables;
   actionName: string;
-  actionOpts: NestorVariables;
+  actionOpts: NestorCliVariables;
 }
 
 export interface NestorRuntimeExec {
@@ -37,7 +38,7 @@ export interface NestorRuntimeExec {
 }
 
 export interface NestorRuntimeArgs {
-  envVariables: NestorVariables;
+  envVariables: NestorEnvVariables;
   cli: NestorCliArguments;
 }
 
@@ -130,7 +131,7 @@ export default function mkRuntimeContext(
   const cliArguments = parseCli(cliOptions, argv, version);
 
   // Retrieve AWS environment variables
-  const envVariables: NestorVariables = {
+  const envVariables: NestorEnvVariables = {
     awsAccessKeyId: checkEnvVariable(env, 'NESTOR_AWS_ACCESS_KEY_ID'),
     awsSecretAccessKey: checkEnvVariable(env, 'NESTOR_AWS_SECRET_ACCESS_KEY'),
     awsRegion: checkEnvVariable(env, 'NESTOR_AWS_REGION'),

@@ -2,7 +2,7 @@ import { NestorAPI } from './types';
 
 import { VERSION } from './version';
 
-import mkRuntimeContext from './runtimeContext';
+import mkRuntimeContext from './runtime';
 import mkResources from './resources';
 
 export default function nestor(): NestorAPI {
