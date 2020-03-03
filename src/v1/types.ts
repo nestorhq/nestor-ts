@@ -15,9 +15,19 @@ export interface NestorResourcesAPI {
   s3(args: NestorResourcesS3Args): NestorResourcesS3;
 }
 
+export interface NestorDeploymentsStorageArgs {
+  bucket: NestorResourcesS3;
+  baseDirectory: string;
+}
+
+export interface NestorAdminAPI {
+  deploymentsStorage(args: NestorDeploymentsStorageArgs): void;
+}
+
 export interface NestorAPI {
   getVersion(): string;
   vars: NestorEnvironmentVariables;
   resources: NestorResourcesAPI;
+  admin: NestorAdminAPI;
   exec(): Promise<void>;
 }

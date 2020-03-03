@@ -8,11 +8,6 @@ export interface ResourcesRepository {
   s3Resources: NestorResourcesS3[];
 }
 
-export interface NestorResources {
-  resourcesAPI(): NestorResourcesAPI;
-  resourcesRepository(): ResourcesRepository;
-}
-
 function mkResourcesS3(args: NestorResourcesS3Args): NestorResourcesS3 {
   return {
     getBucketName(): string {
@@ -31,6 +26,11 @@ function mkResourcesManager(
       return res;
     },
   };
+}
+
+export interface NestorResources {
+  resourcesAPI(): NestorResourcesAPI;
+  resourcesRepository(): ResourcesRepository;
 }
 
 export default (): NestorResources => {
