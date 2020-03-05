@@ -1,12 +1,12 @@
 import {
   NestorAdminAPI,
-  NestorResourcesS3,
+  NestorResourcesS3Bucket,
   NestorDeploymentsStorageArgs,
 } from './types';
 import { NestorResources } from './resources';
 
 interface AdminRepository {
-  deploymentBucket?: NestorResourcesS3;
+  deploymentBucket?: NestorResourcesS3Bucket;
   deploymentBaseDirectory?: string;
 }
 

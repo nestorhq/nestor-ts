@@ -3,20 +3,35 @@ export interface NestorEnvironmentVariables {
   environmentName: string; // name of the runtime environment production, staging, name of branch ...
 }
 
-export interface NestorResourcesS3 {
+export interface NestorResourcesS3Bucket {
   getBucketName(): string;
 }
 
-export interface NestorResourcesS3Args {
+export interface NestorResourcesS3BucketArgs {
   bucketName: string;
 }
 
+export interface NestorResourcesDynamoDbMonoTableArgs {
+  tableName: string;
+  provisioned: boolean;
+  rcu?: number;
+  wcu?: number;
+}
+export interface NestorResourcesDynamodbTable {
+  getTableName(): string;
+  getArn(): string;
+  isMonoTable(): boolean;
+}
+
 export interface NestorResourcesAPI {
-  s3(args: NestorResourcesS3Args): NestorResourcesS3;
+  s3Bucket(args: NestorResourcesS3BucketArgs): NestorResourcesS3Bucket;
+  dynamoDbMonoTable(
+    args: NestorResourcesDynamoDbMonoTableArgs,
+  ): NestorResourcesDynamodbTable;
 }
 
 export interface NestorDeploymentsStorageArgs {
-  bucket: NestorResourcesS3;
+  bucket: NestorResourcesS3Bucket;
   baseDirectory: string;
 }
 

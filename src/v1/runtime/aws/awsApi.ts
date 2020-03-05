@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 
 export interface NestorAwsAPI {
   s3(): AWS.S3;
+  dynamoDb(): AWS.DynamoDB;
 }
 
 export interface AwsApiArgs {
@@ -19,6 +20,12 @@ export default (args: AwsApiArgs): NestorAwsAPI => {
   return {
     s3(): AWS.S3 {
       return new AWS.S3({
+        credentials,
+        region: args.region,
+      });
+    },
+    dynamoDb(): AWS.DynamoDB {
+      return new AWS.DynamoDB({
         credentials,
         region: args.region,
       });

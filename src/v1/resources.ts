@@ -1,17 +1,38 @@
 import {
   NestorResourcesAPI,
-  NestorResourcesS3Args,
-  NestorResourcesS3,
+  NestorResourcesS3BucketArgs,
+  NestorResourcesS3Bucket,
+  NestorResourcesDynamoDbMonoTableArgs,
+  NestorResourcesDynamodbTable,
 } from './types';
 
 export interface ResourcesRepository {
-  s3Resources: NestorResourcesS3[];
+  s3Buckets: NestorResourcesS3Bucket[];
+  dynamoDbTables: NestorResourcesDynamodbTable[];
 }
 
-function mkResourcesS3(args: NestorResourcesS3Args): NestorResourcesS3 {
+function mkResourcesS3Bucket(
+  args: NestorResourcesS3BucketArgs,
+): NestorResourcesS3Bucket {
   return {
     getBucketName(): string {
       return args.bucketName;
+    },
+  };
+}
+
+function mkResourcesDynamodbTable(
+  args: NestorResourcesDynamoDbMonoTableArgs,
+): NestorResourcesDynamodbTable {
+  return {
+    getTableName(): string {
+      return args.tableName;
+    },
+    getArn(): string {
+      return 'not_available_yet';
+    },
+    isMonoTable(): boolean {
+      return true;
     },
   };
 }
@@ -20,9 +41,16 @@ function mkResourcesManager(
   repository: ResourcesRepository,
 ): NestorResourcesAPI {
   return {
-    s3(args: NestorResourcesS3Args): NestorResourcesS3 {
-      const res = mkResourcesS3(args);
-      repository.s3Resources.push(res);
+    s3Bucket(args: NestorResourcesS3BucketArgs): NestorResourcesS3Bucket {
+      const res = mkResourcesS3Bucket(args);
+      repository.s3Buckets.push(res);
+      return res;
+    },
+    dynamoDbMonoTable(
+      args: NestorResourcesDynamoDbMonoTableArgs,
+    ): NestorResourcesDynamodbTable {
+      const res = mkResourcesDynamodbTable(args);
+      repository.dynamoDbTables.push(res);
       return res;
     },
   };
@@ -35,7 +63,8 @@ export interface NestorResources {
 
 export default (): NestorResources => {
   const repository: ResourcesRepository = {
-    s3Resources: [],
+    s3Buckets: [],
+    dynamoDbTables: [],
   };
   return {
     resourcesAPI(): NestorResourcesAPI {
