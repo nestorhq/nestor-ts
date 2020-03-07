@@ -3,6 +3,16 @@ export interface NestorEnvironmentVariables {
   environmentName: string; // name of the runtime environment production, staging, name of branch ...
 }
 
+// ApiGateway
+export interface NestorResourcesApiGateway {
+  getId(): string;
+  addLambdaJsonIntegration(
+    lambda: NestorResourcesLambdaFunction,
+    resources: string[],
+  ): void;
+}
+// end ApiGateway
+
 // LambdaFunction
 export type NestorResourcesLambdaFunctionRuntime =
   | 'NODEJS_10_X'
@@ -61,6 +71,7 @@ export interface NestorResourcesAPI {
     id: string,
     args: NestorResourcesLambdaFunctionArgs,
   ): NestorResourcesLambdaFunction;
+  apiGateway(id: string): NestorResourcesApiGateway;
 }
 
 export interface NestorDeploymentsStorageArgs {

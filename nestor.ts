@@ -34,6 +34,12 @@ const lambda = nestor.resources.lambdaFunction('testLambda', {
 });
 dynamoDbMainTable.grantReadDataToLambda(lambda);
 
+const apigw = nestor.resources.apiGateway('myApiGateway');
+apigw.addLambdaJsonIntegration(lambda, [
+  'GET|POST /items',
+  'GET|DELETE /items/{item}',
+]);
+
 console.log(s3Bucket.getBucketName());
 
 nestor.exec();

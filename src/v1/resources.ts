@@ -7,12 +7,28 @@ import {
   NestorResourcesLambdaFunction,
   NestorResourcesLambdaFunctionArgs,
   NestorResourcesLambdaFunctionRuntime,
+  NestorResourcesApiGateway,
 } from './types';
 
 export interface ResourcesRepository {
   s3Buckets: NestorResourcesS3Bucket[];
   dynamoDbTables: NestorResourcesDynamodbTable[];
   lambdas: NestorResourcesLambdaFunction[];
+  apiGateways: NestorResourcesApiGateway[];
+}
+
+function mkResourcesApiGateway(id: string): NestorResourcesApiGateway {
+  return {
+    getId(): string {
+      return id;
+    },
+    addLambdaJsonIntegration(
+      _lambda: NestorResourcesLambdaFunction,
+      _resources: string[],
+    ): void {
+      // TODO
+    },
+  };
 }
 
 function mkResourcesLambdaFunction(
@@ -94,6 +110,11 @@ function mkResourcesManager(
       repository.lambdas.push(res);
       return res;
     },
+    apiGateway(id: string): NestorResourcesApiGateway {
+      const res = mkResourcesApiGateway(id);
+      repository.apiGateways.push(res);
+      return res;
+    },
   };
 }
 
@@ -107,6 +128,7 @@ export default (): NestorResources => {
     s3Buckets: [],
     dynamoDbTables: [],
     lambdas: [],
+    apiGateways: [],
   };
   return {
     resourcesAPI(): NestorResourcesAPI {
