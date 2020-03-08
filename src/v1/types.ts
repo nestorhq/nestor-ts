@@ -8,10 +8,13 @@ export interface NestorEnvironmentVariables {
 export interface NestorResourcesHttpApiArgs {
   apiName: string;
   targetLambda: NestorResourcesLambdaFunction;
+  isPublic?: boolean;
 }
 
 export interface NestorResourcesHttpApi {
   getId(): string;
+  isPublic(): boolean;
+  getApiName(): string;
 }
 // end HttpApi
 

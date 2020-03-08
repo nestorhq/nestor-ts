@@ -21,12 +21,18 @@ export interface ResourcesRepository {
 
 function mkResourcesHttpApi(
   id: string,
-  _args: NestorResourcesHttpApiArgs,
+  args: NestorResourcesHttpApiArgs,
   _variables: NestorEnvironmentVariables,
 ): NestorResourcesHttpApi {
   return {
     getId(): string {
       return id;
+    },
+    isPublic(): boolean {
+      return args.isPublic || false;
+    },
+    getApiName(): string {
+      return args.apiName;
     },
   };
 }

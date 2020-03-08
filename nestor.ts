@@ -34,6 +34,7 @@ dynamoDbMainTable.grantReadDataToLambda(lambda);
 const httpApi = nestor.resources.httpApi('myApi', {
   apiName: 'api',
   targetLambda: lambda,
+  isPublic: true,
 });
 
 console.log(s3Bucket.getBucketName());
