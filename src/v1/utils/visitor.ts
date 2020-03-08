@@ -3,6 +3,7 @@ import {
   NestorResourcesS3Bucket,
   NestorResourcesDynamodbTable,
   NestorResourcesLambdaFunction,
+  NestorResourcesHttpApi,
 } from '../types';
 
 export interface S3Visitor {
@@ -23,11 +24,18 @@ export interface LambdaVisitor {
   after(): void;
 }
 
+export interface HttpApiVisitor {
+  before(): void;
+  visit(lambda: NestorResourcesHttpApi, idx: number): void;
+  after(): void;
+}
+
 export interface ResourcesVisitor {
   before(): void;
   s3(): S3Visitor;
   dynamoDb(): DynamoDbVisitor;
   lambda(): LambdaVisitor;
+  httpApi(): HttpApiVisitor;
   after(): void;
 }
 
@@ -65,6 +73,14 @@ export function resourcesVisit(
     lambdaVisitor.visit(lambda, idx);
   });
   lambdaVisitor.after();
+
+  // httpApi
+  const httpApiVisitor = visitor.httpApi();
+  httpApiVisitor.before();
+  repository.httpApis.forEach((httpApi, idx) => {
+    httpApiVisitor.visit(httpApi, idx);
+  });
+  httpApiVisitor.after();
 
   visitor.after();
 }

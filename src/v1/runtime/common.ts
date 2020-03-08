@@ -5,6 +5,7 @@ import {
   NestorResourcesS3Bucket,
   NestorResourcesDynamodbTable,
   NestorResourcesLambdaFunction,
+  NestorResourcesHttpApi,
 } from '../types';
 
 import {
@@ -12,6 +13,7 @@ import {
   S3Visitor,
   DynamoDbVisitor,
   LambdaVisitor,
+  HttpApiVisitor,
 } from '../utils/visitor';
 
 import { NestorResources } from '../resources';
@@ -74,10 +76,28 @@ export function listResources(resources: NestorResources): void {
         return {
           before(): void {
             log('');
-            log(chalk.green('Lambda functionbs:'));
+            log(chalk.green('Lambda functions:'));
           },
           visit(lambda: NestorResourcesLambdaFunction, idx: number): void {
             _table.push([idx, chalk.yellow(lambda.getFunctionName())]);
+          },
+          after(): void {
+            log(_table.toString());
+          },
+        };
+      },
+      httpApi(): HttpApiVisitor {
+        const _table = new Table({
+          head: ['#', 'http Api name'],
+          colWidths: [5, 100],
+        });
+        return {
+          before(): void {
+            log('');
+            log(chalk.green('Http Apis:'));
+          },
+          visit(httpApi: NestorResourcesHttpApi, idx: number): void {
+            _table.push([idx, chalk.yellow(httpApi.getId())]);
           },
           after(): void {
             log(_table.toString());
