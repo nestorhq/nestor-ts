@@ -35,7 +35,7 @@ export default async function deploy(
   const clientRole = mkRole(awsApi.iam(), appName, environmentName);
   for (const lambda of repository.lambdas) {
     const roleInfo = await clientRole.createLambdaRole(
-      `role-lambda-${lambda.getId()}`,
+      `role-${appName}-${environmentName}-lambda-${lambda.getId()}`,
       lambda.getFunctionName(),
     );
     await clientLambda.createFunction(

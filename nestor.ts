@@ -5,7 +5,7 @@ const nestor = nestorv1('myapp');
 console.log('Nestor version:', nestor.getVersion());
 
 const s3Bucket = nestor.resources.s3Bucket('testBucket', {
-  bucketName: `${nestor.variables.environmentName}-bucket-1234-abcdef`,
+  bucketName: `bucket-1234-abcdef`,
 });
 
 nestor.admin.deploymentsStorage({

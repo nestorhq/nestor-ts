@@ -8,7 +8,7 @@ import mkAdmin from './admin';
 
 export default function nestor(appName: string): NestorAPI {
   const runtime = mkRuntimeContext(process.env, process.argv, VERSION, appName);
-  const resourcesHolder = mkResources();
+  const resourcesHolder = mkResources(runtime.vars());
   const adminHolder = mkAdmin(resourcesHolder);
   const vars = runtime.vars();
 

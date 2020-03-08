@@ -8,6 +8,7 @@ import {
   NestorResourcesLambdaFunctionArgs,
   NestorResourcesLambdaFunctionRuntime,
   NestorResourcesApiGateway,
+  NestorEnvironmentVariables,
 } from './types';
 
 export interface ResourcesRepository {
@@ -17,7 +18,10 @@ export interface ResourcesRepository {
   apiGateways: NestorResourcesApiGateway[];
 }
 
-function mkResourcesApiGateway(id: string): NestorResourcesApiGateway {
+function mkResourcesApiGateway(
+  id: string,
+  _variables: NestorEnvironmentVariables,
+): NestorResourcesApiGateway {
   return {
     getId(): string {
       return id;
@@ -34,6 +38,7 @@ function mkResourcesApiGateway(id: string): NestorResourcesApiGateway {
 function mkResourcesLambdaFunction(
   id: string,
   args: NestorResourcesLambdaFunctionArgs,
+  variables: NestorEnvironmentVariables,
 ): NestorResourcesLambdaFunction {
   return {
     getId(): string {
@@ -43,7 +48,8 @@ function mkResourcesLambdaFunction(
       return args.runtime;
     },
     getFunctionName(): string {
-      return args.functionName;
+      const name = `${variables.applicationName}-${variables.environmentName}-${args.functionName}`;
+      return name;
     },
     getHandlerName(): string {
       return args.handler;
@@ -54,13 +60,15 @@ function mkResourcesLambdaFunction(
 function mkResourcesS3Bucket(
   id: string,
   args: NestorResourcesS3BucketArgs,
+  variables: NestorEnvironmentVariables,
 ): NestorResourcesS3Bucket {
   return {
     getId(): string {
       return id;
     },
     getBucketName(): string {
-      return args.bucketName;
+      const name = `${variables.applicationName}-${variables.environmentName}-${args.bucketName}`;
+      return name;
     },
   };
 }
@@ -68,13 +76,15 @@ function mkResourcesS3Bucket(
 function mkResourcesDynamodbTable(
   id: string,
   args: NestorResourcesDynamoDbMonoTableArgs,
+  variables: NestorEnvironmentVariables,
 ): NestorResourcesDynamodbTable {
   return {
     getId(): string {
       return id;
     },
     getTableName(): string {
-      return args.tableName;
+      const name = `${variables.applicationName}-${variables.environmentName}-${args.tableName}`;
+      return name;
     },
     getArn(): string {
       return 'not_available_yet';
@@ -90,13 +100,14 @@ function mkResourcesDynamodbTable(
 
 function mkResourcesManager(
   repository: ResourcesRepository,
+  variables: NestorEnvironmentVariables,
 ): NestorResourcesAPI {
   return {
     s3Bucket(
       id: string,
       args: NestorResourcesS3BucketArgs,
     ): NestorResourcesS3Bucket {
-      const res = mkResourcesS3Bucket(id, args);
+      const res = mkResourcesS3Bucket(id, args, variables);
       repository.s3Buckets.push(res);
       return res;
     },
@@ -104,7 +115,7 @@ function mkResourcesManager(
       id: string,
       args: NestorResourcesDynamoDbMonoTableArgs,
     ): NestorResourcesDynamodbTable {
-      const res = mkResourcesDynamodbTable(id, args);
+      const res = mkResourcesDynamodbTable(id, args, variables);
       repository.dynamoDbTables.push(res);
       return res;
     },
@@ -112,12 +123,12 @@ function mkResourcesManager(
       id: string,
       args: NestorResourcesLambdaFunctionArgs,
     ): NestorResourcesLambdaFunction {
-      const res = mkResourcesLambdaFunction(id, args);
+      const res = mkResourcesLambdaFunction(id, args, variables);
       repository.lambdas.push(res);
       return res;
     },
     apiGateway(id: string): NestorResourcesApiGateway {
-      const res = mkResourcesApiGateway(id);
+      const res = mkResourcesApiGateway(id, variables);
       repository.apiGateways.push(res);
       return res;
     },
@@ -129,7 +140,7 @@ export interface NestorResources {
   resourcesRepository(): ResourcesRepository;
 }
 
-export default (): NestorResources => {
+export default (variables: NestorEnvironmentVariables): NestorResources => {
   const repository: ResourcesRepository = {
     s3Buckets: [],
     dynamoDbTables: [],
@@ -138,7 +149,7 @@ export default (): NestorResources => {
   };
   return {
     resourcesAPI(): NestorResourcesAPI {
-      return mkResourcesManager(repository);
+      return mkResourcesManager(repository, variables);
     },
     resourcesRepository(): ResourcesRepository {
       return repository;
