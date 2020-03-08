@@ -254,7 +254,7 @@ export default (
       // DeleteConflict: Cannot delete entity, must detach all policies first
       const exitsRole = await doesRoleExists(iam, roleName);
       if (exitsRole) {
-        log('Delete exictisng role:', roleName);
+        log('Delete existing role:', roleName);
         await deleteRole(iam, roleName);
       }
 

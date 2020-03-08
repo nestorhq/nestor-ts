@@ -5,6 +5,7 @@ export interface NestorAwsAPI {
   s3(): AWS.S3;
   dynamoDb(): AWS.DynamoDB;
   lambda(): AWS.Lambda;
+  apiGatewayV2(): AWS.ApiGatewayV2;
 }
 
 export interface AwsApiArgs {
@@ -40,6 +41,12 @@ export default (args: AwsApiArgs): NestorAwsAPI => {
     },
     lambda(): AWS.Lambda {
       return new AWS.Lambda({
+        credentials,
+        region: args.region,
+      });
+    },
+    apiGatewayV2(): AWS.ApiGatewayV2 {
+      return new AWS.ApiGatewayV2({
         credentials,
         region: args.region,
       });

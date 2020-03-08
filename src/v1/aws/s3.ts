@@ -36,8 +36,6 @@ export default (
         const params = {
           Bucket: bucketName,
         };
-        log('Create bucket:');
-        log(params);
         await client.createBucket(params).promise();
 
         const paramsTagging = {
