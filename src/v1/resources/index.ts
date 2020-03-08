@@ -10,7 +10,7 @@ import {
   NestorResourcesHttpApiArgs,
   NestorResourcesHttpApi,
   NestorEnvironmentVariables,
-} from './types';
+} from '../types';
 
 export interface ResourcesRepository {
   s3Buckets: NestorResourcesS3Bucket[];
