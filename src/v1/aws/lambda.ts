@@ -16,7 +16,7 @@ export interface LambdaService {
     functionName: string,
     handler: string,
     roleArn: string,
-  ): Promise<void>;
+  ): Promise<AWS.Lambda.FunctionConfiguration>;
 }
 
 async function createLambda(
@@ -80,7 +80,7 @@ export default (
       functionName: string,
       handler: string,
       roleArn: string,
-    ): Promise<void> {
+    ): Promise<AWS.Lambda.FunctionConfiguration> {
       try {
         const codeZip = await makeZip(defaultLambda, 'lambda.js');
 
@@ -112,6 +112,7 @@ export default (
           .then((data: AWS.Lambda.FunctionConfiguration) => {
             spinner.succeed(`lambda created: ${functionName}`);
             log(data);
+            return data;
           })
           .catch(err => {
             spinner.fail(`lambda creation failed: ${functionName}`);

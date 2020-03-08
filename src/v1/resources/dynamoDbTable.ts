@@ -5,6 +5,8 @@ import {
   NestorEnvironmentVariables,
 } from '../types';
 
+import { ResourcesMapper } from './index';
+
 export interface NestorDynamodbTable {
   model(): NestorResourcesDynamodbTable;
 }
@@ -13,6 +15,7 @@ export default function mkResourcesDynamodbTable(
   id: string,
   args: NestorResourcesDynamoDbMonoTableArgs,
   variables: NestorEnvironmentVariables,
+  _mapper: ResourcesMapper,
 ): NestorDynamodbTable {
   return {
     model(): NestorResourcesDynamodbTable {

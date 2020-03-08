@@ -4,6 +4,8 @@ import {
   NestorEnvironmentVariables,
 } from '../types';
 
+import { ResourcesMapper } from './index';
+
 export interface NestorS3Bucket {
   model(): NestorResourcesS3Bucket;
 }
@@ -12,6 +14,7 @@ export default function mkResourcesS3Bucket(
   id: string,
   args: NestorResourcesS3BucketArgs,
   variables: NestorEnvironmentVariables,
+  _mapper: ResourcesMapper,
 ): NestorS3Bucket {
   return {
     model(): NestorResourcesS3Bucket {
