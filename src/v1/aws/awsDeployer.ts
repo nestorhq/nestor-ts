@@ -11,16 +11,18 @@ import {
 
 import {
   NestorResourcesS3Bucket,
-  NestorResourcesDynamodbTable,
   NestorResourcesLambdaFunction,
   NestorResourcesHttpApi,
 } from '../types';
+
+import { NestorDynamodbTable } from '../resources/dynamoDbTable';
 
 import { NestorResources } from '../resources';
 import mkS3 from './s3';
 import mkDynamoDb from './dynamoDb';
 import mkLambda from './lambda';
 import mkRole from './role';
+import mkApiGatewayV2 from './apiGatewayV2';
 
 function s3Deployer(
   awsApi: NestorAwsAPI,
@@ -57,11 +59,11 @@ function dynamoDbDeployer(
 
   return {
     async visit(
-      dynamoDbTableResource: NestorResourcesDynamodbTable,
+      dynamoDbTableResource: NestorDynamodbTable,
       _idx: number,
     ): Promise<void> {
       await clientDynamoDb.createMonoTable(
-        dynamoDbTableResource.getTableName(),
+        dynamoDbTableResource.model().getTableName(),
       );
     },
   };
@@ -98,11 +100,16 @@ function httpApiDeployer(
   appName: string,
   environmentName: string,
 ): HttpApiVisitor {
+  const clientApiGatewayV2 = mkApiGatewayV2(
+    awsApi.apiGatewayV2(),
+    appName,
+    environmentName,
+  );
   return {
-    async visit(
-      httpApi: NestorResourcesHttpApi,
-      _idx: number,
-    ): Promise<void> {},
+    async visit(httpApi: NestorResourcesHttpApi, _idx: number): Promise<void> {
+      const apiName = `${httpApi.getApiName()}`;
+      await clientApiGatewayV2.createHttpApi(apiName, 'todo');
+    },
   };
 }
 

@@ -18,6 +18,7 @@ import {
 } from '../utils/visitor';
 
 import { NestorResources } from '../resources';
+import { NestorDynamodbTable } from '../resources/dynamoDbTable';
 
 export async function listResources(resources: NestorResources): Promise<void> {
   await resourcesVisit(
@@ -64,10 +65,13 @@ export async function listResources(resources: NestorResources): Promise<void> {
               log(chalk.green('DynamoDb tables:'));
             },
             async visit(
-              dynamoDbTable: NestorResourcesDynamodbTable,
+              dynamoDbTable: NestorDynamodbTable,
               idx: number,
             ): Promise<void> {
-              _table.push([idx, chalk.yellow(dynamoDbTable.getTableName())]);
+              _table.push([
+                idx,
+                chalk.yellow(dynamoDbTable.model().getTableName()),
+              ]);
             },
             async after(): Promise<void> {
               log(_table.toString());

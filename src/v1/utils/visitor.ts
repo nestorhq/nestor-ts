@@ -1,10 +1,11 @@
 import { NestorResources } from '../resources';
 import {
   NestorResourcesS3Bucket,
-  NestorResourcesDynamodbTable,
   NestorResourcesLambdaFunction,
   NestorResourcesHttpApi,
 } from '../types';
+
+import { NestorDynamodbTable } from '../resources/dynamoDbTable';
 
 export interface S3Visitor {
   before?(): Promise<void>;
@@ -14,10 +15,7 @@ export interface S3Visitor {
 
 export interface DynamoDbVisitor {
   before?(): Promise<void>;
-  visit(
-    dynamoDbTable: NestorResourcesDynamodbTable,
-    idx: number,
-  ): Promise<void>;
+  visit(dynamoDbTable: NestorDynamodbTable, idx: number): Promise<void>;
   after?(): Promise<void>;
 }
 
