@@ -9,13 +9,10 @@ import {
   HttpApiVisitor,
 } from '../utils/visitor';
 
-import {
-  NestorResourcesS3Bucket,
-  NestorResourcesLambdaFunction,
-  NestorResourcesHttpApi,
-} from '../types';
-
 import { NestorDynamodbTable } from '../resources/dynamoDbTable';
+import { NestorHttpApi } from '../resources/httpApi';
+import { NestorLambdaFunction } from '../resources/lambdaFunction';
+import { NestorS3Bucket } from '../resources/s3Bucket';
 
 import { NestorResources } from '../resources';
 import mkS3 from './s3';
@@ -32,15 +29,12 @@ function s3Deployer(
   const clientS3 = mkS3(awsApi.s3(), appName, environmentName);
 
   return {
-    async visit(
-      s3Resource: NestorResourcesS3Bucket,
-      _idx: number,
-    ): Promise<void> {
+    async visit(s3Resource: NestorS3Bucket, _idx: number): Promise<void> {
       const alreadyExists = await clientS3.checkBucketExists(
-        s3Resource.getBucketName(),
+        s3Resource.model().getBucketName(),
       );
       if (!alreadyExists) {
-        await clientS3.createBucket(s3Resource.getBucketName());
+        await clientS3.createBucket(s3Resource.model().getBucketName());
       }
     },
   };
@@ -78,17 +72,14 @@ function lambdaDeployer(
   const clientRole = mkRole(awsApi.iam(), appName, environmentName);
 
   return {
-    async visit(
-      lambda: NestorResourcesLambdaFunction,
-      _idx: number,
-    ): Promise<void> {
+    async visit(lambda: NestorLambdaFunction, _idx: number): Promise<void> {
       const roleInfo = await clientRole.createLambdaRole(
-        `role-${appName}-${environmentName}-lambda-${lambda.getId()}`,
-        lambda.getFunctionName(),
+        `role-${appName}-${environmentName}-lambda-${lambda.model().getId()}`,
+        lambda.model().getFunctionName(),
       );
       await clientLambda.createFunction(
-        lambda.getFunctionName(),
-        lambda.getHandlerName(),
+        lambda.model().getFunctionName(),
+        lambda.model().getHandlerName(),
         roleInfo.arn,
       );
     },
@@ -106,8 +97,8 @@ function httpApiDeployer(
     environmentName,
   );
   return {
-    async visit(httpApi: NestorResourcesHttpApi, _idx: number): Promise<void> {
-      const apiName = `${httpApi.getApiName()}`;
+    async visit(httpApi: NestorHttpApi, _idx: number): Promise<void> {
+      const apiName = `${httpApi.model().getApiName()}`;
       await clientApiGatewayV2.createHttpApi(apiName, 'todo');
     },
   };

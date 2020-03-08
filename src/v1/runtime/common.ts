@@ -2,13 +2,6 @@ import chalk from 'chalk';
 import Table from 'cli-table';
 
 import {
-  NestorResourcesS3Bucket,
-  NestorResourcesDynamodbTable,
-  NestorResourcesLambdaFunction,
-  NestorResourcesHttpApi,
-} from '../types';
-
-import {
   resourcesVisit,
   ResourcesVisitor,
   S3Visitor,
@@ -19,6 +12,9 @@ import {
 
 import { NestorResources } from '../resources';
 import { NestorDynamodbTable } from '../resources/dynamoDbTable';
+import { NestorHttpApi } from '../resources/httpApi';
+import { NestorLambdaFunction } from '../resources/lambdaFunction';
+import { NestorS3Bucket } from '../resources/s3Bucket';
 
 export async function listResources(resources: NestorResources): Promise<void> {
   await resourcesVisit(
@@ -43,11 +39,8 @@ export async function listResources(resources: NestorResources): Promise<void> {
               log('');
               log(chalk.green('S3 buckets:'));
             },
-            async visit(
-              s3: NestorResourcesS3Bucket,
-              idx: number,
-            ): Promise<void> {
-              _table.push([idx, chalk.yellow(s3.getBucketName())]);
+            async visit(s3: NestorS3Bucket, idx: number): Promise<void> {
+              _table.push([idx, chalk.yellow(s3.model().getBucketName())]);
             },
             async after(): Promise<void> {
               log(_table.toString());
@@ -89,10 +82,13 @@ export async function listResources(resources: NestorResources): Promise<void> {
               log(chalk.green('Lambda functions:'));
             },
             async visit(
-              lambda: NestorResourcesLambdaFunction,
+              lambda: NestorLambdaFunction,
               idx: number,
             ): Promise<void> {
-              _table.push([idx, chalk.yellow(lambda.getFunctionName())]);
+              _table.push([
+                idx,
+                chalk.yellow(lambda.model().getFunctionName()),
+              ]);
             },
             async after(): Promise<void> {
               log(_table.toString());
@@ -109,14 +105,11 @@ export async function listResources(resources: NestorResources): Promise<void> {
               log('');
               log(chalk.green('Http Apis:'));
             },
-            async visit(
-              httpApi: NestorResourcesHttpApi,
-              idx: number,
-            ): Promise<void> {
+            async visit(httpApi: NestorHttpApi, idx: number): Promise<void> {
               _table.push([
                 idx,
-                chalk.yellow(httpApi.getId()),
-                chalk.yellow(httpApi.isPublic() ? 'Y' : 'N'),
+                chalk.yellow(httpApi.model().getId()),
+                chalk.yellow(httpApi.model().isPublic() ? 'Y' : 'N'),
               ]);
             },
             async after(): Promise<void> {

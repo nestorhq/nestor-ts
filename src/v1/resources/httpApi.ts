@@ -1,31 +1,31 @@
 import {
-  NestorResourcesAPI,
-  NestorResourcesS3BucketArgs,
-  NestorResourcesS3Bucket,
-  NestorResourcesDynamoDbMonoTableArgs,
-  NestorResourcesDynamodbTable,
-  NestorResourcesLambdaFunction,
-  NestorResourcesLambdaFunctionArgs,
-  NestorResourcesLambdaFunctionRuntime,
   NestorResourcesHttpApiArgs,
   NestorResourcesHttpApi,
   NestorEnvironmentVariables,
 } from '../types';
 
+export interface NestorHttpApi {
+  model(): NestorResourcesHttpApi;
+}
+
 export default function mkResourcesHttpApi(
   id: string,
   args: NestorResourcesHttpApiArgs,
   _variables: NestorEnvironmentVariables,
-): NestorResourcesHttpApi {
+): NestorHttpApi {
   return {
-    getId(): string {
-      return id;
-    },
-    isPublic(): boolean {
-      return args.isPublic || false;
-    },
-    getApiName(): string {
-      return args.apiName;
+    model(): NestorResourcesHttpApi {
+      return {
+        getId(): string {
+          return id;
+        },
+        isPublic(): boolean {
+          return args.isPublic || false;
+        },
+        getApiName(): string {
+          return args.apiName;
+        },
+      };
     },
   };
 }

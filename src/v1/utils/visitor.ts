@@ -1,15 +1,13 @@
 import { NestorResources } from '../resources';
-import {
-  NestorResourcesS3Bucket,
-  NestorResourcesLambdaFunction,
-  NestorResourcesHttpApi,
-} from '../types';
 
 import { NestorDynamodbTable } from '../resources/dynamoDbTable';
+import { NestorHttpApi } from '../resources/httpApi';
+import { NestorLambdaFunction } from '../resources/lambdaFunction';
+import { NestorS3Bucket } from '../resources/s3Bucket';
 
 export interface S3Visitor {
   before?(): Promise<void>;
-  visit(s3: NestorResourcesS3Bucket, idx: number): Promise<void>;
+  visit(s3: NestorS3Bucket, idx: number): Promise<void>;
   after?(): Promise<void>;
 }
 
@@ -21,13 +19,13 @@ export interface DynamoDbVisitor {
 
 export interface LambdaVisitor {
   before?(): Promise<void>;
-  visit(lambda: NestorResourcesLambdaFunction, idx: number): Promise<void>;
+  visit(lambda: NestorLambdaFunction, idx: number): Promise<void>;
   after?(): Promise<void>;
 }
 
 export interface HttpApiVisitor {
   before?(): Promise<void>;
-  visit(lambda: NestorResourcesHttpApi, idx: number): Promise<void>;
+  visit(lambda: NestorHttpApi, idx: number): Promise<void>;
   after?(): Promise<void>;
 }
 

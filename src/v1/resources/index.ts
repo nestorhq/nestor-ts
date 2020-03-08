@@ -12,15 +12,17 @@ import {
 } from '../types';
 
 export interface ResourcesRepository {
-  s3Buckets: NestorResourcesS3Bucket[];
+  s3Buckets: NestorS3Bucket[];
   dynamoDbTables: NestorDynamodbTable[];
-  lambdas: NestorResourcesLambdaFunction[];
-  httpApis: NestorResourcesHttpApi[];
+  lambdas: NestorLambdaFunction[];
+  httpApis: NestorHttpApi[];
 }
 
-import mkResourcesS3Bucket from './s3Bucket';
-import mkResourcesHttpApi from './httpApi';
-import mkResourcesLambdaFunction from './lambdaFunction';
+import mkResourcesS3Bucket, { NestorS3Bucket } from './s3Bucket';
+import mkResourcesHttpApi, { NestorHttpApi } from './httpApi';
+import mkResourcesLambdaFunction, {
+  NestorLambdaFunction,
+} from './lambdaFunction';
 import mkResourcesDynamodbTable, { NestorDynamodbTable } from './dynamoDbTable';
 
 function mkResourcesManager(
@@ -34,7 +36,7 @@ function mkResourcesManager(
     ): NestorResourcesS3Bucket {
       const res = mkResourcesS3Bucket(id, args, variables);
       repository.s3Buckets.push(res);
-      return res;
+      return res.model();
     },
     dynamoDbMonoTable(
       id: string,
@@ -50,7 +52,7 @@ function mkResourcesManager(
     ): NestorResourcesLambdaFunction {
       const res = mkResourcesLambdaFunction(id, args, variables);
       repository.lambdas.push(res);
-      return res;
+      return res.model();
     },
     httpApi(
       id: string,
@@ -58,7 +60,7 @@ function mkResourcesManager(
     ): NestorResourcesHttpApi {
       const res = mkResourcesHttpApi(id, args, variables);
       repository.httpApis.push(res);
-      return res;
+      return res.model();
     },
   };
 }

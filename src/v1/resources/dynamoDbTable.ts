@@ -1,14 +1,7 @@
 import {
-  NestorResourcesAPI,
-  NestorResourcesS3BucketArgs,
-  NestorResourcesS3Bucket,
   NestorResourcesDynamoDbMonoTableArgs,
   NestorResourcesDynamodbTable,
   NestorResourcesLambdaFunction,
-  NestorResourcesLambdaFunctionArgs,
-  NestorResourcesLambdaFunctionRuntime,
-  NestorResourcesHttpApiArgs,
-  NestorResourcesHttpApi,
   NestorEnvironmentVariables,
 } from '../types';
 
