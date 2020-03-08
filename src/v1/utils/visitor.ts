@@ -1,9 +1,9 @@
-import { NestorResources } from './resources';
+import { NestorResources } from '../resources';
 import {
   NestorResourcesS3Bucket,
   NestorResourcesDynamodbTable,
   NestorResourcesLambdaFunction,
-} from './types';
+} from '../types';
 
 export interface S3Visitor {
   before(): void;

@@ -8,9 +8,9 @@ import mkAdmin from './admin';
 
 export default function nestor(appName: string): NestorAPI {
   const runtime = mkRuntimeContext(process.env, process.argv, VERSION, appName);
-  const resourcesHolder = mkResources(runtime.vars());
-  const adminHolder = mkAdmin(resourcesHolder);
   const vars = runtime.vars();
+  const resourcesHolder = mkResources(vars);
+  const adminHolder = mkAdmin(resourcesHolder);
 
   // return API to script
   return {
@@ -21,7 +21,7 @@ export default function nestor(appName: string): NestorAPI {
     resources: resourcesHolder.resourcesAPI(),
     admin: adminHolder.adminAPI(),
     exec(): Promise<void> {
-      return runtime.exec(resourcesHolder);
+      return runtime.exec(resourcesHolder, adminHolder);
     },
   };
 }

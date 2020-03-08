@@ -2,7 +2,7 @@ import AWS from 'aws-sdk';
 import debug from 'debug';
 import ora from 'ora';
 import retry from 'retry';
-import { makeZip } from '../../utils';
+import { makeZip } from '../utils';
 const log = debug('aws');
 
 // default code for the lambda

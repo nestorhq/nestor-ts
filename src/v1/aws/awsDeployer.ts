@@ -1,6 +1,6 @@
 import { NestorAwsAPI } from './awsApi';
 
-import { NestorResources } from '../../resources';
+import { NestorResources } from '../resources';
 import mkS3 from './s3';
 import mkDynamoDb from './dynamoDb';
 import mkLambda from './lambda';

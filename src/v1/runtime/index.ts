@@ -4,6 +4,7 @@ import { NestorEnvironmentVariables } from '../types';
 
 import mkLocalRuntimeContext, { getLocalCliOptions } from './local';
 import { NestorResources } from '../resources';
+import { NestorAdmin } from '../admin';
 
 export interface ProcessEnv {
   [key: string]: string | undefined;
@@ -34,7 +35,7 @@ export interface NestorCliArguments {
 
 export interface NestorRuntimeExec {
   vars(): NestorEnvironmentVariables;
-  exec(resources: NestorResources): Promise<void>;
+  exec(resources: NestorResources, admin: NestorAdmin): Promise<void>;
 }
 
 export interface NestorRuntimeArgs {
