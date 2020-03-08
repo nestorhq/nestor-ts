@@ -7,80 +7,89 @@ import {
 } from '../types';
 
 export interface S3Visitor {
-  before(): void;
-  visit(s3: NestorResourcesS3Bucket, idx: number): void;
-  after(): void;
+  before(): Promise<void>;
+  visit(s3: NestorResourcesS3Bucket, idx: number): Promise<void>;
+  after(): Promise<void>;
 }
 
 export interface DynamoDbVisitor {
-  before(): void;
-  visit(dynamoDbTable: NestorResourcesDynamodbTable, idx: number): void;
-  after(): void;
+  before(): Promise<void>;
+  visit(
+    dynamoDbTable: NestorResourcesDynamodbTable,
+    idx: number,
+  ): Promise<void>;
+  after(): Promise<void>;
 }
 
 export interface LambdaVisitor {
-  before(): void;
-  visit(lambda: NestorResourcesLambdaFunction, idx: number): void;
-  after(): void;
+  before(): Promise<void>;
+  visit(lambda: NestorResourcesLambdaFunction, idx: number): Promise<void>;
+  after(): Promise<void>;
 }
 
 export interface HttpApiVisitor {
-  before(): void;
-  visit(lambda: NestorResourcesHttpApi, idx: number): void;
-  after(): void;
+  before(): Promise<void>;
+  visit(lambda: NestorResourcesHttpApi, idx: number): Promise<void>;
+  after(): Promise<void>;
 }
 
 export interface ResourcesVisitor {
-  before(): void;
+  before(): Promise<void>;
   s3(): S3Visitor;
   dynamoDb(): DynamoDbVisitor;
   lambda(): LambdaVisitor;
   httpApi(): HttpApiVisitor;
-  after(): void;
+  after(): Promise<void>;
 }
 
 interface ResourcesVisitorFactory {
   (): ResourcesVisitor;
 }
-export function resourcesVisit(
+export async function resourcesVisit(
   resources: NestorResources,
   factory: ResourcesVisitorFactory,
-): void {
+): Promise<void> {
+  let idx = 0;
   const visitor = factory();
-  visitor.before();
+  await visitor.before();
   const repository = resources.resourcesRepository();
 
   // S3
   const s3Visitor = visitor.s3();
-  s3Visitor.before();
-  repository.s3Buckets.forEach((s3, idx) => {
-    s3Visitor.visit(s3, idx);
-  });
-  s3Visitor.after();
+  await s3Visitor.before();
+  idx = 0;
+  for (const s3 of repository.s3Buckets) {
+    await s3Visitor.visit(s3, idx);
+    idx++;
+  }
+  await s3Visitor.after();
 
   // DynamoDbTable
   const dynamoDbVisitor = visitor.dynamoDb();
-  dynamoDbVisitor.before();
-  repository.dynamoDbTables.forEach((table, idx) => {
-    dynamoDbVisitor.visit(table, idx);
-  });
-  dynamoDbVisitor.after();
+  await dynamoDbVisitor.before();
+  idx = 0;
+  for (const table of repository.dynamoDbTables) {
+    await dynamoDbVisitor.visit(table, idx);
+  }
+  await dynamoDbVisitor.after();
 
   // lambda
   const lambdaVisitor = visitor.lambda();
-  lambdaVisitor.before();
-  repository.lambdas.forEach((lambda, idx) => {
-    lambdaVisitor.visit(lambda, idx);
-  });
-  lambdaVisitor.after();
+  await lambdaVisitor.before();
+  idx = 0;
+  for (const lambda of repository.lambdas) {
+    await lambdaVisitor.visit(lambda, idx);
+  }
+  await lambdaVisitor.after();
 
   // httpApi
   const httpApiVisitor = visitor.httpApi();
-  httpApiVisitor.before();
-  repository.httpApis.forEach((httpApi, idx) => {
-    httpApiVisitor.visit(httpApi, idx);
-  });
-  httpApiVisitor.after();
+  await httpApiVisitor.before();
+  idx = 0;
+  for (const httpApi of repository.httpApis) {
+    await httpApiVisitor.visit(httpApi, idx);
+  }
+  await httpApiVisitor.after();
 
-  visitor.after();
+  await visitor.after();
 }

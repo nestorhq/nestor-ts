@@ -58,7 +58,7 @@ export default (args: NestorRuntimeArgs): NestorRuntimeExec => {
           break;
 
         case 'list':
-          listResources(resources);
+          await listResources(resources);
           break;
 
         default:

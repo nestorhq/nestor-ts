@@ -18,14 +18,14 @@ import {
 
 import { NestorResources } from '../resources';
 
-export function listResources(resources: NestorResources): void {
-  resourcesVisit(resources, () => {
+export async function listResources(resources: NestorResources): Promise<void> {
+  await resourcesVisit(resources, () => {
     const log = console.log;
     return {
-      before(): void {
+      async before(): Promise<void> {
         log(chalk.underline('List of resources:'));
       },
-      after(): void {
+      async after(): Promise<void> {
         log('');
       },
       s3(): S3Visitor {
@@ -35,14 +35,14 @@ export function listResources(resources: NestorResources): void {
         });
 
         return {
-          before(): void {
+          async before(): Promise<void> {
             log('');
             log(chalk.green('S3 buckets:'));
           },
-          visit(s3: NestorResourcesS3Bucket, idx: number): void {
+          async visit(s3: NestorResourcesS3Bucket, idx: number): Promise<void> {
             _table.push([idx, chalk.yellow(s3.getBucketName())]);
           },
-          after(): void {
+          async after(): Promise<void> {
             log(_table.toString());
           },
         };
@@ -53,17 +53,17 @@ export function listResources(resources: NestorResources): void {
           colWidths: [5, 100],
         });
         return {
-          before(): void {
+          async before(): Promise<void> {
             log('');
             log(chalk.green('DynamoDb tables:'));
           },
-          visit(
+          async visit(
             dynamoDbTable: NestorResourcesDynamodbTable,
             idx: number,
-          ): void {
+          ): Promise<void> {
             _table.push([idx, chalk.yellow(dynamoDbTable.getTableName())]);
           },
-          after(): void {
+          async after(): Promise<void> {
             log(_table.toString());
           },
         };
@@ -74,14 +74,17 @@ export function listResources(resources: NestorResources): void {
           colWidths: [5, 100],
         });
         return {
-          before(): void {
+          async before(): Promise<void> {
             log('');
             log(chalk.green('Lambda functions:'));
           },
-          visit(lambda: NestorResourcesLambdaFunction, idx: number): void {
+          async visit(
+            lambda: NestorResourcesLambdaFunction,
+            idx: number,
+          ): Promise<void> {
             _table.push([idx, chalk.yellow(lambda.getFunctionName())]);
           },
-          after(): void {
+          async after(): Promise<void> {
             log(_table.toString());
           },
         };
@@ -92,14 +95,17 @@ export function listResources(resources: NestorResources): void {
           colWidths: [5, 100],
         });
         return {
-          before(): void {
+          async before(): Promise<void> {
             log('');
             log(chalk.green('Http Apis:'));
           },
-          visit(httpApi: NestorResourcesHttpApi, idx: number): void {
+          async visit(
+            httpApi: NestorResourcesHttpApi,
+            idx: number,
+          ): Promise<void> {
             _table.push([idx, chalk.yellow(httpApi.getId())]);
           },
-          after(): void {
+          async after(): Promise<void> {
             log(_table.toString());
           },
         };
