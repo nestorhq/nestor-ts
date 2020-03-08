@@ -36,6 +36,7 @@ export default (args: NestorRuntimeArgs): NestorRuntimeExec => {
       return {
         environmentName: environmentName,
         runtimeContext: 'local',
+        applicationName: appName,
       };
     },
     async exec(resources: NestorResources): Promise<void> {

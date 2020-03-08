@@ -1,5 +1,6 @@
 export interface NestorEnvironmentVariables {
   runtimeContext: 'local' | 'ghaction';
+  applicationName: string; // name of the application
   environmentName: string; // name of the runtime environment production, staging, name of branch ...
 }
 
@@ -18,6 +19,7 @@ export type NestorResourcesLambdaFunctionRuntime =
   | 'NODEJS_10_X'
   | 'NODEJS_12_X';
 export interface NestorResourcesLambdaFunctionArgs {
+  functionName: string;
   runtime: NestorResourcesLambdaFunctionRuntime;
   handler: string;
   timeoutInSeconds: number;
@@ -27,6 +29,8 @@ export interface NestorResourcesLambdaFunctionArgs {
 export interface NestorResourcesLambdaFunction {
   getId(): string;
   getRuntime(): NestorResourcesLambdaFunctionRuntime;
+  getFunctionName(): string;
+  getHandlerName(): string;
 }
 // end LambdaFunction
 
@@ -75,7 +79,7 @@ export interface NestorResourcesAPI {
 }
 
 export interface NestorDeploymentsStorageArgs {
-  bucket: NestorResourcesS3Bucket;
+  bucketName: string;
   baseDirectory: string;
 }
 
@@ -85,7 +89,7 @@ export interface NestorAdminAPI {
 
 export interface NestorAPI {
   getVersion(): string;
-  vars: NestorEnvironmentVariables;
+  variables: NestorEnvironmentVariables;
   resources: NestorResourcesAPI;
   admin: NestorAdminAPI;
   exec(): Promise<void>;

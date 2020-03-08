@@ -17,7 +17,7 @@ export default function nestor(appName: string): NestorAPI {
     getVersion(): string {
       return VERSION;
     },
-    vars,
+    variables: vars,
     resources: resourcesHolder.resourcesAPI(),
     admin: adminHolder.adminAPI(),
     exec(): Promise<void> {

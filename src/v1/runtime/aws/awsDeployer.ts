@@ -3,6 +3,8 @@ import { NestorAwsAPI } from './awsApi';
 import { NestorResources } from '../../resources';
 import mkS3 from './s3';
 import mkDynamoDb from './dynamoDb';
+import mkLambda from './lambda';
+import mkRole from './role';
 
 export default async function deploy(
   awsApi: NestorAwsAPI,
@@ -27,5 +29,19 @@ export default async function deploy(
   );
   for (const dynamoDbTableResource of repository.dynamoDbTables) {
     await clientDynamoDb.createMonoTable(dynamoDbTableResource.getTableName());
+  }
+
+  const clientLambda = mkLambda(awsApi.lambda(), appName, environmentName);
+  const clientRole = mkRole(awsApi.iam(), appName, environmentName);
+  for (const lambda of repository.lambdas) {
+    const roleInfo = await clientRole.createLambdaRole(
+      `role-lambda-${lambda.getId()}`,
+      lambda.getFunctionName(),
+    );
+    await clientLambda.createFunction(
+      lambda.getFunctionName(),
+      lambda.getHandlerName(),
+      roleInfo.arn,
+    );
   }
 }

@@ -1,8 +1,10 @@
 import AWS from 'aws-sdk';
 
 export interface NestorAwsAPI {
+  iam(): AWS.IAM;
   s3(): AWS.S3;
   dynamoDb(): AWS.DynamoDB;
+  lambda(): AWS.Lambda;
 }
 
 export interface AwsApiArgs {
@@ -18,6 +20,12 @@ export default (args: AwsApiArgs): NestorAwsAPI => {
     args.sessionToken,
   );
   return {
+    iam(): AWS.IAM {
+      return new AWS.IAM({
+        credentials,
+        region: args.region,
+      });
+    },
     s3(): AWS.S3 {
       return new AWS.S3({
         credentials,
@@ -26,6 +34,12 @@ export default (args: AwsApiArgs): NestorAwsAPI => {
     },
     dynamoDb(): AWS.DynamoDB {
       return new AWS.DynamoDB({
+        credentials,
+        region: args.region,
+      });
+    },
+    lambda(): AWS.Lambda {
+      return new AWS.Lambda({
         credentials,
         region: args.region,
       });

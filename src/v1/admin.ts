@@ -1,19 +1,15 @@
-import {
-  NestorAdminAPI,
-  NestorResourcesS3Bucket,
-  NestorDeploymentsStorageArgs,
-} from './types';
+import { NestorAdminAPI, NestorDeploymentsStorageArgs } from './types';
 import { NestorResources } from './resources';
 
 interface AdminRepository {
-  deploymentBucket?: NestorResourcesS3Bucket;
+  deploymentBucketName?: string;
   deploymentBaseDirectory?: string;
 }
 
 function mkAdminManager(repository: AdminRepository): NestorAdminAPI {
   return {
     deploymentsStorage(args: NestorDeploymentsStorageArgs): void {
-      repository.deploymentBucket = args.bucket;
+      repository.deploymentBucketName = args.bucketName;
       repository.deploymentBaseDirectory = args.baseDirectory;
     },
   };
@@ -25,7 +21,7 @@ export interface NestorAdmin {
 
 export default (_resourcesHolder: NestorResources): NestorAdmin => {
   const repository: AdminRepository = {
-    deploymentBucket: undefined,
+    deploymentBucketName: undefined,
     deploymentBaseDirectory: undefined,
   };
   return {

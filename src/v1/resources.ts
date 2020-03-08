@@ -42,6 +42,12 @@ function mkResourcesLambdaFunction(
     getRuntime(): NestorResourcesLambdaFunctionRuntime {
       return args.runtime;
     },
+    getFunctionName(): string {
+      return args.functionName;
+    },
+    getHandlerName(): string {
+      return args.handler;
+    },
   };
 }
 
