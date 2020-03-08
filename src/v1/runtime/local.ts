@@ -19,7 +19,7 @@ import {
   S3Visitor,
   DynamoDbVisitor,
   LambdaVisitor,
-} from '../utils';
+} from '../vistor';
 import mkAwsApi from './aws/awsApi';
 import awsDeployer from './aws/awsDeployer';
 

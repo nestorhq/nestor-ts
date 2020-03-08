@@ -7,7 +7,8 @@ import {
   NestorResourcesLambdaFunction,
   NestorResourcesLambdaFunctionArgs,
   NestorResourcesLambdaFunctionRuntime,
-  NestorResourcesApiGateway,
+  NestorResourcesHttpApiArgs,
+  NestorResourcesHttpApi,
   NestorEnvironmentVariables,
 } from './types';
 
@@ -15,22 +16,17 @@ export interface ResourcesRepository {
   s3Buckets: NestorResourcesS3Bucket[];
   dynamoDbTables: NestorResourcesDynamodbTable[];
   lambdas: NestorResourcesLambdaFunction[];
-  apiGateways: NestorResourcesApiGateway[];
+  httpApis: NestorResourcesHttpApi[];
 }
 
-function mkResourcesApiGateway(
+function mkResourcesHttpApi(
   id: string,
+  _args: NestorResourcesHttpApiArgs,
   _variables: NestorEnvironmentVariables,
-): NestorResourcesApiGateway {
+): NestorResourcesHttpApi {
   return {
     getId(): string {
       return id;
-    },
-    addLambdaJsonIntegration(
-      _lambda: NestorResourcesLambdaFunction,
-      _resources: string[],
-    ): void {
-      // TODO
     },
   };
 }
@@ -127,9 +123,12 @@ function mkResourcesManager(
       repository.lambdas.push(res);
       return res;
     },
-    apiGateway(id: string): NestorResourcesApiGateway {
-      const res = mkResourcesApiGateway(id, variables);
-      repository.apiGateways.push(res);
+    httpApi(
+      id: string,
+      args: NestorResourcesHttpApiArgs,
+    ): NestorResourcesHttpApi {
+      const res = mkResourcesHttpApi(id, args, variables);
+      repository.httpApis.push(res);
       return res;
     },
   };
@@ -145,7 +144,7 @@ export default (variables: NestorEnvironmentVariables): NestorResources => {
     s3Buckets: [],
     dynamoDbTables: [],
     lambdas: [],
-    apiGateways: [],
+    httpApis: [],
   };
   return {
     resourcesAPI(): NestorResourcesAPI {

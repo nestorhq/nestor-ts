@@ -1,9 +1,6 @@
 import program, { Command } from 'commander';
 
-import {
-  NestorEnvironmentVariables,
-  NestorDeploymentsStorageArgs,
-} from '../types';
+import { NestorEnvironmentVariables } from '../types';
 
 import mkLocalRuntimeContext, { getLocalCliOptions } from './local';
 import { NestorResources } from '../resources';
