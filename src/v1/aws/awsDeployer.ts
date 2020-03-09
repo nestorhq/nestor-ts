@@ -73,14 +73,15 @@ function lambdaDeployer(
 
   return {
     async visit(lambda: NestorLambdaFunction, _idx: number): Promise<void> {
-      const roleInfo = await clientRole.createLambdaRole(
+      const roleData = await clientRole.createLambdaRole(
         `role-${appName}-${environmentName}-lambda-${lambda.model.getId()}`,
         lambda.model.getFunctionName(),
       );
+      const roleArn = roleData.Role.Arn;
       const data = await clientLambda.createFunction(
         lambda.model.getFunctionName(),
         lambda.model.getHandlerName(),
-        roleInfo.arn,
+        roleArn,
       );
       lambda.setArn(data.FunctionArn);
     },
@@ -99,7 +100,7 @@ function httpApiDeployer(
   );
   return {
     async visit(httpApi: NestorHttpApi, _idx: number): Promise<void> {
-      const apiName = `${httpApi.model.getApiName()}`;
+      const apiName = `${appName}-${environmentName}-api-${httpApi.model.getApiName()}`;
       const targetLambda = httpApi.getTargetLambda();
       await clientApiGatewayV2.createHttpApi(apiName, targetLambda.getArn());
     },

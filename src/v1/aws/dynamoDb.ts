@@ -88,19 +88,22 @@ export default (
             },
           ],
         };
-
-        log('Creating DynamoDB table:');
-        log(params);
-
         client.createTable(params, function(err, data) {
           if (err) {
+            spinner.fail(
+              `dynamoDb.createTable: ${tableName} - ${err} - ${JSON.stringify(
+                params,
+                null,
+                '',
+              )}`,
+            );
             log('Error creating table:');
             log(err);
             return reject(err);
           } else {
+            spinner.succeed(`table created: ${tableName}`);
             log('table created:');
             log(data);
-            spinner.succeed(`table created: ${tableName}`);
             return resolve(false);
           }
         });

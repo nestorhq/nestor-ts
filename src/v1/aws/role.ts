@@ -228,15 +228,11 @@ async function attachCustomRolePolicy(
   });
 }
 
-interface AwsRoleInformation {
-  arn: string;
-}
-
 export interface IamService {
   createLambdaRole(
     roleName: string,
     lambdaFunctionName: string,
-  ): Promise<AwsRoleInformation>;
+  ): Promise<AWS.IAM.CreateRoleResponse>;
 }
 
 export default (
@@ -248,7 +244,7 @@ export default (
     async createLambdaRole(
       roleName: string,
       lambdaFunctionName: string,
-    ): Promise<AwsRoleInformation> {
+    ): Promise<AWS.IAM.CreateRoleResponse> {
       // delete role if already exist
       // TODO: doesn't work
       // DeleteConflict: Cannot delete entity, must detach all policies first
@@ -282,20 +278,20 @@ export default (
         iam.createRole(params, async (err, data) => {
           if (err) {
             spinner.fail(
-              `error iam.createRole: ${JSON.stringify(params, null, '')}`,
+              `iam.createRole error: ${err.name}: ${err.message} ${
+                err.code
+              } ${JSON.stringify(params, null, '')}`,
             );
             log(err);
             return reject(err);
           }
           spinner.succeed(
-            `iam.createRole succeed: ${JSON.stringify(params, null, '')}`,
+            `iam.createRole success: ${JSON.stringify(params, null, '')}`,
           );
           log(data);
           await attachRolePolicy(iam, lambdaExecutionRolePolicy, roleName);
           await attachCustomRolePolicy(iam, roleName);
-          return resolve({
-            arn: data.Role.Arn,
-          });
+          return resolve(data);
         });
       });
     },

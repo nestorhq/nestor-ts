@@ -1,3 +1,4 @@
+import AWS from 'aws-sdk';
 import fs from 'fs';
 import archiver from 'archiver';
 import streams from 'memory-streams';
@@ -101,6 +102,12 @@ export async function makeZipFromFile(
 
     archive.finalize();
   });
+}
+
+export function e2s(err: AWS.AWSError, message?: string): string {
+  return `${message || ''} - AWS Error: name=${err.name} code=${
+    err.code
+  } message:${err.message}`;
 }
 
 /***
