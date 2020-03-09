@@ -31,10 +31,10 @@ function s3Deployer(
   return {
     async visit(s3Resource: NestorS3Bucket, _idx: number): Promise<void> {
       const alreadyExists = await clientS3.checkBucketExists(
-        s3Resource.model().getBucketName(),
+        s3Resource.model.getBucketName(),
       );
       if (!alreadyExists) {
-        await clientS3.createBucket(s3Resource.model().getBucketName());
+        await clientS3.createBucket(s3Resource.model.getBucketName());
       }
     },
   };
@@ -57,7 +57,7 @@ function dynamoDbDeployer(
       _idx: number,
     ): Promise<void> {
       await clientDynamoDb.createMonoTable(
-        dynamoDbTableResource.model().getTableName(),
+        dynamoDbTableResource.model.getTableName(),
       );
     },
   };
@@ -74,12 +74,12 @@ function lambdaDeployer(
   return {
     async visit(lambda: NestorLambdaFunction, _idx: number): Promise<void> {
       const roleInfo = await clientRole.createLambdaRole(
-        `role-${appName}-${environmentName}-lambda-${lambda.model().getId()}`,
-        lambda.model().getFunctionName(),
+        `role-${appName}-${environmentName}-lambda-${lambda.model.getId()}`,
+        lambda.model.getFunctionName(),
       );
       const data = await clientLambda.createFunction(
-        lambda.model().getFunctionName(),
-        lambda.model().getHandlerName(),
+        lambda.model.getFunctionName(),
+        lambda.model.getHandlerName(),
         roleInfo.arn,
       );
       lambda.setArn(data.FunctionArn);
@@ -99,9 +99,9 @@ function httpApiDeployer(
   );
   return {
     async visit(httpApi: NestorHttpApi, _idx: number): Promise<void> {
-      const apiName = `${httpApi.model().getApiName()}`;
+      const apiName = `${httpApi.model.getApiName()}`;
       const targetLambda = httpApi.getTargetLambda();
-      await clientApiGatewayV2.createHttpApi(apiName, 'todo');
+      await clientApiGatewayV2.createHttpApi(apiName, targetLambda.getArn());
     },
   };
 }

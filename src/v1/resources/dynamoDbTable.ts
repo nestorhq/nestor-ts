@@ -8,7 +8,7 @@ import {
 import { ResourcesMapper } from './index';
 
 export interface NestorDynamodbTable {
-  model(): NestorResourcesDynamodbTable;
+  model: NestorResourcesDynamodbTable;
 }
 
 export default function mkResourcesDynamodbTable(
@@ -18,25 +18,23 @@ export default function mkResourcesDynamodbTable(
   _mapper: ResourcesMapper,
 ): NestorDynamodbTable {
   return {
-    model(): NestorResourcesDynamodbTable {
-      return {
-        getId(): string {
-          return id;
-        },
-        getTableName(): string {
-          const name = `${variables.applicationName}-${variables.environmentName}-${args.tableName}`;
-          return name;
-        },
-        getArn(): string {
-          return 'not_available_yet';
-        },
-        isMonoTable(): boolean {
-          return true;
-        },
-        grantReadDataToLambda(_lambda: NestorResourcesLambdaFunction): void {
-          // TODO
-        },
-      };
+    model: {
+      getId(): string {
+        return id;
+      },
+      getTableName(): string {
+        const name = `${variables.applicationName}-${variables.environmentName}-${args.tableName}`;
+        return name;
+      },
+      getArn(): string {
+        return 'not_available_yet';
+      },
+      isMonoTable(): boolean {
+        return true;
+      },
+      grantReadDataToLambda(_lambda: NestorResourcesLambdaFunction): void {
+        // TODO
+      },
     },
   };
 }

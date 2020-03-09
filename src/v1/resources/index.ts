@@ -28,16 +28,24 @@ import mkResourcesDynamodbTable, { NestorDynamodbTable } from './dynamoDbTable';
 const resourcesMap = new Map();
 
 export interface ResourcesMapper {
-  httpApi(model: NestorResourcesHttpApi): NestorHttpApi | undefined;
+  httpApi(model: NestorResourcesHttpApi): NestorHttpApi;
+  lambdaFunction(model: NestorResourcesLambdaFunction): NestorLambdaFunction;
 }
 
 const mapper: ResourcesMapper = {
-  httpApi(model: NestorResourcesHttpApi): NestorHttpApi | undefined {
+  httpApi(model: NestorResourcesHttpApi): NestorHttpApi {
     const res = resourcesMap.get(model);
     if (!res) {
-      return undefined;
+      throw new Error(`no instance of NestorHttpApi found`);
     }
     return res as NestorHttpApi;
+  },
+  lambdaFunction(model: NestorResourcesLambdaFunction): NestorLambdaFunction {
+    const res = resourcesMap.get(model);
+    if (!res) {
+      throw new Error(`no instance of NestorLambdaFunction found`);
+    }
+    return res as NestorLambdaFunction;
   },
 };
 
@@ -52,7 +60,7 @@ function mkResourcesManager(
     ): NestorResourcesS3Bucket {
       const res = mkResourcesS3Bucket(id, args, variables, mapper);
       repository.s3Buckets.push(res);
-      const model = res.model();
+      const model = res.model;
       resourcesMap.set(model, res);
       return model;
     },
@@ -62,7 +70,7 @@ function mkResourcesManager(
     ): NestorResourcesDynamodbTable {
       const res = mkResourcesDynamodbTable(id, args, variables, mapper);
       repository.dynamoDbTables.push(res);
-      const model = res.model();
+      const model = res.model;
       resourcesMap.set(model, res);
       return model;
     },
@@ -72,7 +80,7 @@ function mkResourcesManager(
     ): NestorResourcesLambdaFunction {
       const res = mkResourcesLambdaFunction(id, args, variables, mapper);
       repository.lambdas.push(res);
-      const model = res.model();
+      const model = res.model;
       resourcesMap.set(model, res);
       return model;
     },
@@ -82,7 +90,7 @@ function mkResourcesManager(
     ): NestorResourcesHttpApi {
       const res = mkResourcesHttpApi(id, args, variables, mapper);
       repository.httpApis.push(res);
-      const model = res.model();
+      const model = res.model;
       resourcesMap.set(model, res);
       return model;
     },

@@ -6,10 +6,11 @@ import {
 } from '../types';
 
 import { ResourcesMapper } from './index';
+import { NestorLambdaFunction } from './lambdaFunction';
 
 export interface NestorHttpApi {
-  model(): NestorResourcesHttpApi;
-  getTargetLambda(): NestorResourcesLambdaFunction;
+  model: NestorResourcesHttpApi;
+  getTargetLambda(): NestorLambdaFunction;
 }
 
 export default function mkResourcesHttpApi(
@@ -19,21 +20,19 @@ export default function mkResourcesHttpApi(
   _mapper: ResourcesMapper,
 ): NestorHttpApi {
   return {
-    getTargetLambda(): NestorResourcesLambdaFunction {
-      return args.targetLambda;
+    getTargetLambda(): NestorLambdaFunction {
+      return _mapper.lambdaFunction(args.targetLambda);
     },
-    model(): NestorResourcesHttpApi {
-      return {
-        getId(): string {
-          return id;
-        },
-        isPublic(): boolean {
-          return args.isPublic || false;
-        },
-        getApiName(): string {
-          return args.apiName;
-        },
-      };
+    model: {
+      getId(): string {
+        return id;
+      },
+      isPublic(): boolean {
+        return args.isPublic || false;
+      },
+      getApiName(): string {
+        return args.apiName;
+      },
     },
   };
 }

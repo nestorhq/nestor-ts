@@ -9,7 +9,8 @@ import { ResourcesMapper } from './index';
 
 export interface NestorLambdaFunction {
   setArn(arn: string | undefined): void;
-  model(): NestorResourcesLambdaFunction;
+  getArn(): string;
+  model: NestorResourcesLambdaFunction;
 }
 
 export default function mkResourcesLambdaFunction(
@@ -25,22 +26,23 @@ export default function mkResourcesLambdaFunction(
     setArn(arn: string | undefined): void {
       extra.arn = arn || '';
     },
-    model(): NestorResourcesLambdaFunction {
-      return {
-        getId(): string {
-          return id;
-        },
-        getRuntime(): NestorResourcesLambdaFunctionRuntime {
-          return args.runtime;
-        },
-        getFunctionName(): string {
-          const name = `${variables.applicationName}-${variables.environmentName}-${args.functionName}`;
-          return name;
-        },
-        getHandlerName(): string {
-          return args.handler;
-        },
-      };
+    getArn(): string {
+      return extra.arn;
+    },
+    model: {
+      getId(): string {
+        return id;
+      },
+      getRuntime(): NestorResourcesLambdaFunctionRuntime {
+        return args.runtime;
+      },
+      getFunctionName(): string {
+        const name = `${variables.applicationName}-${variables.environmentName}-${args.functionName}`;
+        return name;
+      },
+      getHandlerName(): string {
+        return args.handler;
+      },
     },
   };
 }

@@ -40,7 +40,7 @@ export async function listResources(resources: NestorResources): Promise<void> {
               log(chalk.green('S3 buckets:'));
             },
             async visit(s3: NestorS3Bucket, idx: number): Promise<void> {
-              _table.push([idx, chalk.yellow(s3.model().getBucketName())]);
+              _table.push([idx, chalk.yellow(s3.model.getBucketName())]);
             },
             async after(): Promise<void> {
               log(_table.toString());
@@ -63,7 +63,7 @@ export async function listResources(resources: NestorResources): Promise<void> {
             ): Promise<void> {
               _table.push([
                 idx,
-                chalk.yellow(dynamoDbTable.model().getTableName()),
+                chalk.yellow(dynamoDbTable.model.getTableName()),
               ]);
             },
             async after(): Promise<void> {
@@ -85,10 +85,7 @@ export async function listResources(resources: NestorResources): Promise<void> {
               lambda: NestorLambdaFunction,
               idx: number,
             ): Promise<void> {
-              _table.push([
-                idx,
-                chalk.yellow(lambda.model().getFunctionName()),
-              ]);
+              _table.push([idx, chalk.yellow(lambda.model.getFunctionName())]);
             },
             async after(): Promise<void> {
               log(_table.toString());
@@ -108,8 +105,8 @@ export async function listResources(resources: NestorResources): Promise<void> {
             async visit(httpApi: NestorHttpApi, idx: number): Promise<void> {
               _table.push([
                 idx,
-                chalk.yellow(httpApi.model().getId()),
-                chalk.yellow(httpApi.model().isPublic() ? 'Y' : 'N'),
+                chalk.yellow(httpApi.model.getId()),
+                chalk.yellow(httpApi.model.isPublic() ? 'Y' : 'N'),
               ]);
             },
             async after(): Promise<void> {
