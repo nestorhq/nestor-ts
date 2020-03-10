@@ -94,6 +94,7 @@ async function doCreateLambdaWithRetry(
       spinner.text = `creating lambda [${currentAttempt}]: ${params.FunctionName}`;
       createLambda(client, params)
         .then(data => {
+          spinner.succeed(`lambda created: ${params.FunctionName}`);
           return resolve(data);
         })
         .catch(err => {
@@ -107,7 +108,6 @@ async function doCreateLambdaWithRetry(
             spinner.fail(
               e2s(err, `error creating function ${params.FunctionName}`),
             );
-
             return reject(err);
           }
         });
