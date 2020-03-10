@@ -100,9 +100,14 @@ function httpApiDeployer(
   );
   return {
     async visit(httpApi: NestorHttpApi, _idx: number): Promise<void> {
-      const apiName = `${appName}-${environmentName}-api-${httpApi.model.getApiName()}`;
+      const apiName = `${appName}-${environmentName}-apigw2-${httpApi.model.getApiName()}`;
       const targetLambda = httpApi.getTargetLambda();
-      await clientApiGatewayV2.createHttpApi(apiName, targetLambda.getArn());
+      const apigw = await clientApiGatewayV2.createHttpApi(
+        apiName,
+        targetLambda.getArn(),
+      );
+      httpApi.setApiId(apigw.ApiId || '');
+      httpApi.setApiEndPoint(apigw.ApiEndpoint || '');
     },
   };
 }
