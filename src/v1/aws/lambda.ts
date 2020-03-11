@@ -27,10 +27,16 @@ async function awsFindLambda(
       },
       (err, data) => {
         if (err) {
-          spinner.succeed(
+          // test if function does not exist
+          if (err.code === 'ResourceNotFoundException') {
+            spinner.succeed(
+              `lambda.getFunctionConfiguration - function does not exist (${lambdaFunctionName})`,
+            );
+            return resolve(null);
+          }
+          spinner.fail(
             e2s(err, `lambda.getFunctionConfiguration(${lambdaFunctionName})`),
           );
-          return resolve(null);
         }
         spinner.succeed(
           `lambda.getFunctionConfiguration(${lambdaFunctionName}) ${JSON.stringify(
